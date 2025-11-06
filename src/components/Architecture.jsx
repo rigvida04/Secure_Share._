@@ -11,7 +11,7 @@ const Architecture = () => {
     {
       step: '2',
       title: 'Secret Sharing',
-      description: 'Encrypted data is split into multiple shares using Shamir\'s Secret Sharing scheme',
+      description: "Encrypted data is split into multiple shares using Shamir's Secret Sharing scheme",
       icon: '✂️'
     },
     {
