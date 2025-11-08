@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Secure Share</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-card {
+            background: var(--light-bg);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .dashboard-card h3 {
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+        
+        .cookie-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .cookie-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .cookie-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .cookie-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .cookie-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .logout-btn {
+            background: var(--danger-color);
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 Secure Share Dashboard</h1>
+            <p class="tagline">Manage Your Encrypted Files</p>
+        </header>
+        
+        <main>
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div>
+                        <h2 id="welcomeMessage">Welcome!</h2>
+                        <p style="color: var(--secondary-color);">Logged in successfully</p>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="btn logout-btn">Logout</button>
+            </div>
+            
+            <div class="cookie-info">
+                <h3>🍪 Third-Party Cookie Support Enabled</h3>
+                <p style="margin-bottom: 15px;">
+                    This application uses cookies with <strong>SameSite=None; Secure</strong> attributes to support 
+                    cross-site functionality and third-party integrations.
+                </p>
+                <p style="font-size: 0.9rem; color: var(--secondary-color);">
+                    Current cookies stored:
+                </p>
+                <ul class="cookie-list" id="cookieList">
+                    <li>Loading cookies...</li>
+                </ul>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>📁 Your Files</h3>
+                    <p>Upload and manage your encrypted files securely in the cloud.</p>
+                    <button class="btn btn-primary" style="margin-top: 15px;">Upload Files</button>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3>🔍 Search</h3>
+                    <p>Search through your encrypted files using privacy-preserving keyword search.</p>
+                    <button class="btn btn-primary" style="margin-top: 15px;">Search Files</button>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3>⚙️ Settings</h3>
+                    <p>Manage your account settings, encryption keys, and privacy preferences.</p>
+                    <button class="btn btn-secondary" style="margin-top: 15px;">Go to Settings</button>
+                </div>
+            </div>
+            
+            <div class="back-link">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Secure Share. Your privacy is our priority.</p>
+        </footer>
+    </div>
+    
+    <script src="login.js"></script>
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const sessionToken = getCookie('session_token');
+            const userInfo = getCookie('user_info');
+            
+            if (!sessionToken) {
+                // Redirect to login if no session
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Display user information
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    document.getElementById('welcomeMessage').textContent = `Welcome, ${user.username}!`;
+                    const avatar = user.username.charAt(0).toUpperCase();
+                    document.getElementById('userAvatar').textContent = avatar;
+                } catch (e) {
+                    console.error('Error parsing user info:', e);
+                }
+            }
+            
+            // Display all cookies
+            displayCookies();
+            
+            // Logout handler
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                // Delete all session cookies
+                deleteCookie('session_token');
+                deleteCookie('user_info');
+                deleteCookie('user_preferences');
+                
+                alert('You have been logged out successfully.');
+                window.location.href = 'login.html';
+            });
+        });
+        
+        function displayCookies() {
+            const cookieList = document.getElementById('cookieList');
+            const cookies = document.cookie.split(';');
+            
+            if (cookies.length === 0 || (cookies.length === 1 && cookies[0] === '')) {
+                cookieList.innerHTML = '<li>No cookies found</li>';
+                return;
+            }
+            
+            cookieList.innerHTML = '';
+            cookies.forEach(cookie => {
+                const trimmedCookie = cookie.trim();
+                if (trimmedCookie) {
+                    const [name, value] = trimmedCookie.split('=');
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${name}</strong>: ${value.substring(0, 50)}${value.length > 50 ? '...' : ''}`;
+                    cookieList.appendChild(li);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
