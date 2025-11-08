@@ -3,6 +3,7 @@ Secure Share - Privacy-Preserving File Sharing with Cloud Storage
 """
 import os
 import secrets
+import tempfile
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, session, send_file, flash, redirect, url_for
 from werkzeug.utils import secure_filename
@@ -139,6 +140,10 @@ def download_file(file_id):
     """Download and decrypt file"""
     user_id = get_session_user()
     
+    # Sanitize file_id to prevent path traversal
+    if not file_id or '..' in file_id or '/' in file_id or '\\' in file_id:
+        return jsonify({'error': 'Invalid file ID'}), 400
+    
     try:
         # Get file metadata
         metadata = cloud_storage.get_metadata(file_id)
@@ -161,10 +166,11 @@ def download_file(file_id):
         fernet = Fernet(encryption_key)
         decrypted_data = fernet.decrypt(encrypted_data)
         
-        # Save to temp file
-        temp_path = os.path.join(UPLOAD_FOLDER, f"temp_{file_id}")
-        with open(temp_path, 'wb') as f:
-            f.write(decrypted_data)
+        # Create a temporary file with secure filename
+        import tempfile
+        with tempfile.NamedTemporaryFile(delete=False, dir=UPLOAD_FOLDER, prefix='download_', suffix='.tmp') as temp_file:
+            temp_file.write(decrypted_data)
+            temp_path = temp_file.name
         
         # Send notification
         notification_manager.send_notification(
@@ -173,11 +179,22 @@ def download_file(file_id):
             f'File "{metadata["filename"]}" downloaded from cloud storage'
         )
         
-        return send_file(
+        # Send file and schedule cleanup
+        response = send_file(
             temp_path,
             as_attachment=True,
             download_name=metadata['filename']
         )
+        
+        # Clean up temp file after sending
+        @response.call_on_close
+        def cleanup():
+            try:
+                os.unlink(temp_path)
+            except:
+                pass
+        
+        return response
         
     except Exception as e:
         app.logger.error(f"Download error: {str(e)}")
