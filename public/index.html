@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Share - Privacy-Preserving File Sharing</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 Secure Share</h1>
+            <p class="subtitle">Privacy-Preserving Keyword Search with Encryption</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <h2>Upload & Encrypt File</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p>Drag & drop your file here or click to browse</p>
+                    <input type="file" id="fileInput" hidden>
+                </div>
+                
+                <div class="form-group">
+                    <label for="keywords">Keywords (comma-separated):</label>
+                    <input type="text" id="keywords" placeholder="e.g., document, invoice, 2024">
+                </div>
+
+                <div class="form-group">
+                    <label for="encryptionKey">Encryption Password:</label>
+                    <input type="password" id="encryptionKey" placeholder="Enter a strong password">
+                </div>
+
+                <button id="uploadBtn" class="btn btn-primary" disabled>
+                    <span class="btn-icon">🔐</span> Encrypt & Upload
+                </button>
+
+                <div id="uploadStatus" class="status-message"></div>
+            </section>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <h2>Search Encrypted Files</h2>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search by keyword...">
+                    <input type="password" id="searchKey" placeholder="Decryption password">
+                    <button id="searchBtn" class="btn btn-secondary">
+                        <span class="btn-icon">🔍</span> Search
+                    </button>
+                </div>
+            </section>
+
+            <!-- Files List Section -->
+            <section class="files-section">
+                <h2>Your Files</h2>
+                <div id="filesList" class="files-list">
+                    <p class="empty-state">No files uploaded yet. Upload your first file above!</p>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>🔐 All files are encrypted client-side before upload. Your privacy is protected.</p>
+        </footer>
+    </div>
+
+    <script src="crypto.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
