@@ -4,7 +4,9 @@ A Privacy-Preserving Keyword Search website with client-side encryption and secu
 
 ## 🌐 Live Demo
 
-Visit the live website: **[https://rigvida04.github.io/Secure_Share._/](https://rigvida04.github.io/Secure_Share._/)**
+**Website URL:** [https://rigvida04.github.io/Secure_Share._/](https://rigvida04.github.io/Secure_Share._/)
+
+> **Note:** To activate the live website, enable GitHub Pages in [repository settings](https://github.com/rigvida04/Secure_Share._/settings/pages) by selecting "GitHub Actions" as the source. See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
 
 ## ✨ Features
 
