@@ -64,13 +64,21 @@ function setupEventListeners() {
 
 function updateUploadArea() {
     if (selectedFile) {
+        const escapedName = escapeHtml(selectedFile.name);
+        const size = escapeHtml(formatFileSize(selectedFile.size));
         uploadArea.innerHTML = `
             <div class="upload-icon">✓</div>
-            <p><strong>${selectedFile.name}</strong></p>
-            <p style="color: #666; font-size: 0.9em;">${formatFileSize(selectedFile.size)}</p>
+            <p><strong>${escapedName}</strong></p>
+            <p style="color: #666; font-size: 0.9em;">${size}</p>
         `;
         uploadBtn.disabled = false;
     }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function formatFileSize(bytes) {
@@ -205,25 +213,30 @@ function displayFiles(files) {
         return;
     }
 
-    filesList.innerHTML = files.map(file => `
-        <div class="file-item" data-file-id="${file.id}">
+    filesList.innerHTML = files.map(file => {
+        const escapedName = escapeHtml(file.originalName);
+        const uploadDate = escapeHtml(new Date(file.uploadDate).toLocaleString());
+        const size = formatFileSize(file.size);
+        return `
+        <div class="file-item" data-file-id="${escapeHtml(file.id)}">
             <div class="file-info">
-                <div class="file-name">🔒 ${file.originalName}</div>
+                <div class="file-name">🔒 ${escapedName}</div>
                 <div class="file-meta">
-                    Uploaded: ${new Date(file.uploadDate).toLocaleString()} | 
-                    Size: ${formatFileSize(file.size)}
+                    Uploaded: ${uploadDate} | 
+                    Size: ${size}
                 </div>
             </div>
             <div class="file-actions">
-                <button class="btn btn-download" onclick="downloadFile('${file.id}', '${file.filename}', '${file.originalName}')">
+                <button class="btn btn-download" onclick="downloadFile('${escapeHtml(file.id)}', '${escapeHtml(file.filename)}', '${escapedName}')">
                     <span class="btn-icon">⬇️</span> Download
                 </button>
-                <button class="btn btn-danger" onclick="deleteFile('${file.id}')">
+                <button class="btn btn-danger" onclick="deleteFile('${escapeHtml(file.id)}')">
                     <span class="btn-icon">🗑️</span> Delete
                 </button>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 async function downloadFile(fileId, filename, originalName) {

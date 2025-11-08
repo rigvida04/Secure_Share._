@@ -57,7 +57,21 @@ app.get('/api/files', (req, res) => {
 
 app.get('/api/download/:filename', (req, res) => {
     const filename = req.params.filename;
+    
+    // Security: Prevent path traversal attacks
+    if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+        return res.status(400).json({ error: 'Invalid filename' });
+    }
+    
     const filepath = path.join(uploadsDir, filename);
+    
+    // Security: Ensure file is within uploads directory
+    const normalizedPath = path.resolve(filepath);
+    const normalizedUploadsDir = path.resolve(uploadsDir);
+    
+    if (!normalizedPath.startsWith(normalizedUploadsDir)) {
+        return res.status(400).json({ error: 'Invalid file path' });
+    }
     
     if (fs.existsSync(filepath)) {
         res.download(filepath);
@@ -72,7 +86,21 @@ app.delete('/api/files/:id', (req, res) => {
     
     if (fileIndex !== -1) {
         const file = fileMetadata[fileIndex];
+        
+        // Security: Prevent path traversal attacks
+        if (file.filename.includes('..') || file.filename.includes('/') || file.filename.includes('\\')) {
+            return res.status(400).json({ error: 'Invalid filename' });
+        }
+        
         const filepath = path.join(uploadsDir, file.filename);
+        
+        // Security: Ensure file is within uploads directory
+        const normalizedPath = path.resolve(filepath);
+        const normalizedUploadsDir = path.resolve(uploadsDir);
+        
+        if (!normalizedPath.startsWith(normalizedUploadsDir)) {
+            return res.status(400).json({ error: 'Invalid file path' });
+        }
         
         // Delete the file
         if (fs.existsSync(filepath)) {
