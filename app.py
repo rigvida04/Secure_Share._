@@ -197,7 +197,9 @@ def download_file(file_id):
         return response
         
     except Exception as e:
-        return jsonify({'error': f'Decryption failed: {str(e)}'}), 500
+        # Log the error for debugging but don't expose details to user
+        app.logger.error(f'Decryption failed for file {file_id}: {str(e)}')
+        return jsonify({'error': 'Decryption failed. Please contact support.'}), 500
 
 
 @app.route('/files', methods=['GET'])
