@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Share - Privacy-Preserving Keyword Search</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 Secure Share</h1>
+            <p class="subtitle">Privacy-Preserving Keyword Search with Encryption</p>
+        </header>
+
+        <main>
+            <!-- Upload Section -->
+            <section class="card">
+                <h2>📤 Upload & Encrypt File</h2>
+                <div class="upload-area">
+                    <input type="file" id="fileInput" accept=".txt,.pdf,.doc,.docx">
+                    <label for="fileInput" class="file-label">
+                        <span class="upload-icon">📁</span>
+                        <span>Choose a file to upload</span>
+                    </label>
+                    <div id="fileName" class="file-name"></div>
+                </div>
+                <div class="form-group">
+                    <label for="fileKeywords">Keywords (comma-separated):</label>
+                    <input type="text" id="fileKeywords" placeholder="e.g., document, report, 2024">
+                </div>
+                <button id="uploadBtn" class="btn btn-primary">Encrypt & Store</button>
+                <div id="uploadStatus" class="status"></div>
+            </section>
+
+            <!-- Search Section -->
+            <section class="card">
+                <h2>🔍 Search Encrypted Files</h2>
+                <div class="form-group">
+                    <label for="searchInput">Search Keyword:</label>
+                    <input type="text" id="searchInput" placeholder="Enter keyword to search">
+                </div>
+                <button id="searchBtn" class="btn btn-secondary">Search</button>
+                <div id="searchResults" class="results"></div>
+            </section>
+
+            <!-- Stored Files Section -->
+            <section class="card">
+                <h2>📚 Stored Files</h2>
+                <div id="filesList" class="files-list">
+                    <p class="empty-state">No files stored yet. Upload a file to get started!</p>
+                </div>
+            </section>
+
+            <!-- Info Section -->
+            <section class="card info-card">
+                <h3>🔐 How It Works</h3>
+                <ul>
+                    <li><strong>Client-Side Encryption:</strong> All files are encrypted in your browser before storage</li>
+                    <li><strong>Privacy-Preserving Search:</strong> Keywords are hashed for secure searching</li>
+                    <li><strong>Local Storage:</strong> Data is stored securely in your browser's local storage</li>
+                    <li><strong>No Server Upload:</strong> Your files never leave your device</li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Secure Share - Privacy First</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
