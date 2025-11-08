@@ -111,18 +111,18 @@ class SecureShare {
 
         // Display results
         if (results.length === 0) {
-            resultsDiv.innerHTML = `<p class="empty-state">No files found for keyword: "${keyword}"</p>`;
+            resultsDiv.innerHTML = `<p class="empty-state">No files found for keyword: "${this.escapeHtml(keyword)}"</p>`;
         } else {
             resultsDiv.innerHTML = `
-                <p style="margin-bottom: 15px; font-weight: 600;">Found ${results.length} file(s) matching "${keyword}":</p>
+                <p style="margin-bottom: 15px; font-weight: 600;">Found ${results.length} file(s) matching "${this.escapeHtml(keyword)}":</p>
                 ${results.map(file => `
                     <div class="result-item">
-                        <h4>📄 ${file.name}</h4>
+                        <h4>📄 ${this.escapeHtml(file.name)}</h4>
                         <p>Size: ${this.formatBytes(file.size)} | Uploaded: ${this.formatDate(file.uploadDate)}</p>
-                        <p>Keywords: ${file.keywords.join(', ')}</p>
+                        <p>Keywords: ${file.keywords.map(k => this.escapeHtml(k)).join(', ')}</p>
                         <div style="margin-top: 10px;">
-                            <button class="btn btn-download" onclick="secureShare.downloadFile('${file.id}')">Download</button>
-                            <button class="btn btn-danger" onclick="secureShare.deleteFile('${file.id}')">Delete</button>
+                            <button class="btn btn-download" onclick="secureShare.downloadFile('${this.escapeHtml(file.id)}')">Download</button>
+                            <button class="btn btn-danger" onclick="secureShare.deleteFile('${this.escapeHtml(file.id)}')">Delete</button>
                         </div>
                     </div>
                 `).join('')}
@@ -142,13 +142,13 @@ class SecureShare {
         filesListDiv.innerHTML = files.map(file => `
             <div class="file-item">
                 <div class="file-info">
-                    <h4>📄 ${file.name}</h4>
+                    <h4>📄 ${this.escapeHtml(file.name)}</h4>
                     <p>Size: ${this.formatBytes(file.size)} | Uploaded: ${this.formatDate(file.uploadDate)}</p>
-                    <p>Keywords: ${file.keywords.join(', ')}</p>
+                    <p>Keywords: ${file.keywords.map(k => this.escapeHtml(k)).join(', ')}</p>
                 </div>
                 <div class="file-actions">
-                    <button class="btn btn-download" onclick="secureShare.downloadFile('${file.id}')">Download</button>
-                    <button class="btn btn-danger" onclick="secureShare.deleteFile('${file.id}')">Delete</button>
+                    <button class="btn btn-download" onclick="secureShare.downloadFile('${this.escapeHtml(file.id)}')">Download</button>
+                    <button class="btn btn-danger" onclick="secureShare.deleteFile('${this.escapeHtml(file.id)}')">Delete</button>
                 </div>
             </div>
         `).join('');
@@ -302,6 +302,12 @@ class SecureShare {
     formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     showStatus(element, message, type) {
