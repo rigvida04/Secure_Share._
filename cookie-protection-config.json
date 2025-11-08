@@ -1,0 +1,81 @@
+{
+  "name": "secure-share-cookie-protection",
+  "version": "1.0.0",
+  "description": "Third-party cookie protection configuration for Secure_Share",
+  "security": {
+    "cookies": {
+      "thirdPartyProtection": true,
+      "defaultAttributes": {
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "Strict",
+        "path": "/",
+        "maxAge": 3600
+      },
+      "allowedDomains": [
+        "self"
+      ],
+      "blockedThirdParty": true
+    },
+    "headers": {
+      "contentSecurityPolicy": {
+        "defaultSrc": ["'self'"],
+        "scriptSrc": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        "styleSrc": ["'self'", "'unsafe-inline'"],
+        "imgSrc": ["'self'", "data:", "https:"],
+        "fontSrc": ["'self'", "data:"],
+        "connectSrc": ["'self'"],
+        "frameAncestors": ["'none'"],
+        "baseUri": ["'self'"],
+        "formAction": ["'self'"]
+      },
+      "strictTransportSecurity": {
+        "maxAge": 31536000,
+        "includeSubDomains": true,
+        "preload": true
+      },
+      "xContentTypeOptions": "nosniff",
+      "xFrameOptions": "DENY",
+      "xXssProtection": "1; mode=block",
+      "referrerPolicy": "strict-origin-when-cross-origin",
+      "permissionsPolicy": {
+        "geolocation": [],
+        "microphone": [],
+        "camera": [],
+        "payment": [],
+        "usb": [],
+        "magnetometer": [],
+        "gyroscope": [],
+        "accelerometer": []
+      }
+    },
+    "features": {
+      "cookieConsent": {
+        "enabled": true,
+        "required": true,
+        "categories": {
+          "necessary": {
+            "enabled": true,
+            "userControl": false,
+            "description": "Essential cookies for website functionality"
+          },
+          "analytics": {
+            "enabled": false,
+            "userControl": false,
+            "description": "No analytics cookies used"
+          },
+          "marketing": {
+            "enabled": false,
+            "userControl": false,
+            "description": "No marketing cookies used"
+          },
+          "thirdParty": {
+            "enabled": false,
+            "userControl": false,
+            "description": "Third-party cookies are blocked"
+          }
+        }
+      }
+    }
+  }
+}
